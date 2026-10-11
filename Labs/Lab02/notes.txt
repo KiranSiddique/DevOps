@@ -1,0 +1,3 @@
+Adding some test notes
+Second note: learning git status and staging
+Second note: learning git status and staging
