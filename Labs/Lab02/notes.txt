@@ -1,3 +1,3 @@
-Adding some test notes
-Second note: learning git status and staging
-Second note: learning git status and staging
+Name: Kiran Siddique - Fun fact: I enjoy learning new technologies and building small projects
+Name: kiransiddique406-source - Fun fact: I like learning how automation makes software deployment faster
+Q1: small change for merge verification
