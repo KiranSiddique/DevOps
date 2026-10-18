@@ -1,0 +1,58 @@
+services:
+  gitea:
+    image: gitea/gitea:28.0.0
+    container_name: gitea
+    environment:
+      GITEA__database__DB_TYPE: postgres
+      GITEA__database__HOST: "127.0.0.1:5432"
+      GITEA__database__NAME: gitea
+      GITEA__database__USER: gitea
+      GITEA__database__PASSWD: gitea
+      GITEA__server__PROTOCOL: http
+
+    restart: always
+    volumes:
+      - gitea:/data
+    # ports:
+    #   - 3000:3000
+    # extra_hosts:
+    #   - "www.jenkins.com:host-gateway"
+    network_mode: "service:db"
+
+  db:
+    image: postgres:17-alpine
+    container_name: gitea_db
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    restart: always
+    volumes:
+      - gitea_postgres:/var/lib/postgresql/data
+    expose:
+      - 5432
+    networks:
+      - webnet
+    ports:
+      - "3000:3000"
+    extra_hosts:
+      - "www.jenkins.com:host-gateway"
+
+volumes:
+  gitea_postgres:
+    name: gitea_postgres
+  gitea:
+    name: gitea
+
+networks:
+  webnet:
+    name: webnet
+#    external: true
+
+
+# Gitea is not allowed to webhook to Jenkins follow these steps
+# 1) Go to Gitea Container
+# 2) cat /data/gitea/conf/app.ini
+# 3) echo "[webhook]" >> /data/gitea/conf/app.ini
+# 4) echo "ALLOWED_HOST_LIST = 192.168.65.2" >> /data/gitea/conf/app.ini
+# Gitea Tautorials : https://www.youtube.com/watch?v=daW2CqH8TUA
