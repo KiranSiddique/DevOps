@@ -1,152 +1,101 @@
-# Lab 07: Docker Containers and Images
+<div align="center">
 
-![Docker](https://img.shields.io/badge/Docker-Containers-2496ED?logo=docker&logoColor=white)
-![NGINX](https://img.shields.io/badge/NGINX-Web%20Server-009639?logo=nginx&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white)
-![Ubuntu](https://img.shields.io/badge/Ubuntu-Server-E95420?logo=ubuntu&logoColor=white)
+# 🐳 Lab 07: Docker Containers & Images
 
-> **Course:** DevOps · **Submission path:** `Labs/Lab07/` · **Environment:** Ubuntu Server (VMware)
+**Hands-on container engineering on Ubuntu Server**
 
-This lab introduces Docker fundamentals on an Ubuntu server. It covers installing Docker and Docker Compose, running PostgreSQL and NGINX containers, managing containers and images, and creating a custom image from a modified container.
+![Docker](https://img.shields.io/badge/Docker-29.1.3-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Compose](https://img.shields.io/badge/Compose-v5.7.0-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![NGINX](https://img.shields.io/badge/NGINX-1.31.8-009639?style=for-the-badge&logo=nginx&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-10.10%20%7C%209.6-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Ubuntu](https://img.shields.io/badge/Ubuntu-26.04%20LTS-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-Bash-FCC624?style=for-the-badge&logo=linux&logoColor=black)
 
----
-
-## Table of Contents
-
-- [Objectives](#objectives)
-- [Environment](#environment)
-- [Tasks Overview](#tasks-overview)
-- [Key Commands](#key-commands)
-- [Screenshot Evidence](#screenshot-evidence)
-- [Repository Structure](#repository-structure)
-- [Key Learnings](#key-learnings)
+</div>
 
 ---
 
-## Objectives
+## 👨‍💻 Author
 
-By the end of this lab, I was able to:
-
-- Install and verify Docker Engine and the Docker Compose plug-in.
-- Run PostgreSQL 9.6 and 10.10 containers in the background and identify them with `docker ps`.
-- Inspect the Docker installation, search Docker Hub, and manage running and stopped containers.
-- Run two NGINX containers on different host ports and read their logs.
-- Attach to a container's main process, open a secondary shell, track filesystem changes, and save a new image with `docker commit`.
+**Kiran Siddique** · DevOps Track · `Labs/Lab07`
 
 ---
 
-## Environment
+## 🎯 What This Lab Demonstrates
 
-| Item | Details |
-|------|---------|
-| Operating System | Ubuntu 26.04.1 LTS |
-| Virtualization | VMware Workstation |
-| Docker Engine | 29.1.3 |
-| Docker Compose | v5.7.0 |
-| Host Access | Browser on Windows host, terminal via VM console and PowerShell SSH |
+This lab covers the full container lifecycle, from installing Docker to building a custom image from a modified container. Every task was performed on a Linux server (Ubuntu in VMware), with access from both the VM console and a Windows host over SSH and the browser.
 
----
-
-## Tasks Overview
-
-| Task | Description | Status |
-|------|-------------|:------:|
-| 1 | Install Docker and Docker Compose, verify versions | ✅ |
-| 2 | Run PostgreSQL 9.6 (missing-password check) and PostgreSQL 10.10 | ✅ |
-| 3 | Inspect Docker, search Docker Hub, manage and clean up containers and images | ✅ |
-| 4 | Run two NGINX containers on ports 6001 and 6002, verify pages and logs | ✅ |
-| 5 | Attach and detach, exec into a container, inspect changes, commit `nginx:myimage` | ✅ |
+| # | Task | Outcome |
+|:-:|------|---------|
+| 1 | Docker & Compose setup | Verified Engine `29.1.3` and Compose `v5.7.0` |
+| 2 | PostgreSQL containers | Ran `9.6` and `10.10` side by side, handled a missing-config error |
+| 3 | Docker inspection & cleanup | Searched Docker Hub, managed container states, removed a container and its image |
+| 4 | NGINX on multiple ports | Served two NGINX versions on `6001` and `6002`, verified via browser and logs |
+| 5 | Container interaction & commit | Attached and detached safely, exec'd into a shell, tracked changes, saved `nginx:myimage` |
 
 ---
 
-## Key Commands
+## 🛠️ Skills Applied
 
-```bash
-# Task 1: Versions
-docker --version
-docker compose version
+<table>
+<tr>
+<td width="50%" valign="top">
 
-# Task 2: PostgreSQL
-docker run -d -e POSTGRES_PASSWORD=password postgres:9.6
-docker run -d -e POSTGRES_PASSWORD=password postgres:10.10
+**🐧 Linux & Shell**
+- Ubuntu server administration
+- Bash commands and terminal workflow
+- Checking network interfaces and IPs (`hostname -I`, `ip`)
+- Managing user groups and permissions (`usermod`, `docker` group)
 
-# Task 3: Inspect and cleanup
-docker info
-docker search ubuntu
-docker run -d ubuntu
-docker ps -a
-docker rm <container>
-docker rmi postgres:9.6
+**🐳 Containerization**
+- Docker Engine and Compose installation
+- Running containers in detached and interactive modes
+- Port publishing (`-p HOST:CONTAINER`)
+- Container lifecycle: `run`, `ps`, `restart`, `stop`, `rm`
+- Image management: `pull`, `images`, `rmi`, `commit`
 
-# Task 4: NGINX on separate ports
-docker run -d -it -p 6001:80 --name nginx-latest nginx
-docker run -d -p 6002:80 --name nginx-older nginx:1.30.6
-docker logs nginx-latest
+</td>
+<td width="50%" valign="top">
 
-# Task 5: Work inside a container and save an image
-docker attach nginx-latest          # detach with Ctrl+P, Ctrl+Q
-docker exec -it nginx-latest /bin/sh
-docker diff nginx-latest
-docker inspect nginx-latest
-docker commit nginx-latest nginx:myimage
-```
+**🔍 Troubleshooting & Observability**
+- Reading container logs and HTTP access logs
+- Inspecting container state and configuration (`docker inspect`)
+- Tracking filesystem changes (`docker diff`)
+- Diagnosing startup failures (missing `POSTGRES_PASSWORD`)
 
----
+**🌐 Services & Networking**
+- NGINX web server deployment and verification
+- PostgreSQL database deployment with version pinning
+- Browser-based service validation across host and VM
+- SSH access from Windows (PowerShell)
 
-## Screenshot Evidence
-
-All screenshots are stored in [`screenshots/`](./screenshots/).
-
-### Task 1: Installation
-
-| File | Shows |
-|------|-------|
-| `docker_installation.png` | `docker --version` and `docker compose version` output |
-
-### Task 2: PostgreSQL
-
-| File | Shows |
-|------|-------|
-| `postgres_missing_password.png` | Missing `POSTGRES_PASSWORD` error on `docker run postgres:9.6` |
-| `postgres_96_running.png` | `docker ps` with the running `postgres:9.6` container |
-| `postgres_both_versions.png` | `docker ps` with `postgres:9.6` and `postgres:10.10` running |
-
-### Task 3: Docker Inspection and Cleanup
-
-| File | Shows |
-|------|-------|
-| `docker_info.png` | `docker info` server details |
-| `docker_search_ubuntu.png` | `docker search ubuntu` with the official image |
-| `ubuntu_container_status.png` | Ubuntu container exited, visible in `docker ps -a` |
-| `postgres_96_cleanup.png` | Restart, stop, remove, and image untag of `postgres:9.6` |
-
-### Task 4: NGINX Containers
-
-| File | Shows |
-|------|-------|
-| `nginx_containers_started.png` | Both `docker run` commands and returned container IDs |
-| `nginx_latest_page.png` | NGINX welcome page on port 6001 |
-| `nginx_older_page.png` | NGINX welcome page on port 6002 |
-| `nginx_latest_logs.png` | `docker logs nginx-latest` with the browser request |
-
-### Task 5: Container Interaction and Image Commit
-
-| File | Shows |
-|------|-------|
-| `nginx_attach_detach.png` | Attached output and detach to the Ubuntu prompt |
-| `nginx_exec_shell.png` | `docker exec` session and commands run inside the container |
-| `nginx_diff.png` | `docker diff` showing `newfile.html` added |
-| `nginx_inspect.png` | `docker inspect` showing the container in `running` state |
-| `nginx_commit.png` | `docker commit` creating `nginx:myimage` |
+</td>
+</tr>
+</table>
 
 ---
 
-## Repository Structure
+## ⚡ Highlights
+
+- 🔁 **Clean lifecycle management:** Stopped and removed a container, then untagged its image, handling a stopped container that blocked deletion.
+- 🔀 **Side-by-side services:** Ran two NGINX versions and two PostgreSQL versions without port or name conflicts.
+- 🧪 **Container forensics:** Used `docker diff` to confirm exactly which files were added inside a running container.
+- 💾 **Custom image creation:** Turned a modified container into a reusable image with `docker commit`.
+
+---
+
+## 🧰 Tech Stack
+
+`Docker` · `Docker Compose` · `NGINX` · `PostgreSQL` · `Ubuntu` · `Bash` · `Git` · `GitHub` · `VMware Workstation` · `SSH`
+
+---
+
+## 📂 Repository Structure
 
 ```
 Labs/Lab07/
 ├── README.md
-└── screenshots/
+└── screenshots/          # 17 proof-of-work screenshots
     ├── docker_installation.png
     ├── postgres_missing_password.png
     ├── postgres_96_running.png
@@ -168,19 +117,22 @@ Labs/Lab07/
 
 ---
 
-## Key Learnings
+## 🔑 Key Takeaways
 
-- **Images vs. containers:** An image is a read-only template. A container is a running (or stopped) instance of that image.
-- **Required configuration:** The official PostgreSQL image refuses to start without `POSTGRES_PASSWORD`.
-- **Running vs. all containers:** `docker ps` lists only running containers. `docker ps -a` also shows stopped ones.
-- **Stopped containers block image removal:** A container that references an image must be removed before `docker rmi` can delete it.
-- **Port publishing:** `-p HOST:CONTAINER` maps a host port to a container port, so two NGINX containers can run side by side.
-- **Attach vs. exec:** `docker attach` connects to the main process. `docker exec` starts a new process, such as a shell.
-- **Detaching safely:** `Ctrl+P` then `Ctrl+Q` leaves a container running after you detach.
-- **Filesystem tracking:** `docker diff` shows files added (`A`), changed (`C`), or deleted (`D`) compared with the image.
-- **Committing changes:** `docker commit` saves a container's current filesystem as a new image.
+> **Images are templates, containers are instances.** Changes inside a container stay there until you commit them into a new image.
+
+> **Attach ≠ Exec.** `docker attach` joins the main process, while `docker exec` starts a new process such as a shell.
+
+> **Detach safely with `Ctrl+P` `Ctrl+Q`** so the container keeps running.
+
+> **Running vs. all:** `docker ps` shows active containers, `docker ps -a` shows everything, including stopped ones.
 
 ---
 
-**Author:** Kiran Siddique
-**Lab Status:** Completed
+<div align="center">
+
+**✅ Lab Status: Completed**
+
+*Built with curiosity, tested with patience.* 🚀
+
+</div>
